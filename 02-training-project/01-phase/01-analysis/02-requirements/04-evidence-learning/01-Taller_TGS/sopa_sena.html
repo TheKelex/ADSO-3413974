@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Sopa de Letras - TGS</title>
+<style>
+body{
+    margin:0;
+    font-family:Segoe UI, sans-serif;
+    background:linear-gradient(135deg,#001F2D,#39A900);
+    color:white;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-height:100vh;
+}
+.container{
+    background:rgba(0,0,0,0.75);
+    padding:20px;
+    border-radius:15px;
+    box-shadow:0 0 30px #39A900;
+}
+h1{
+    text-align:center;
+    color:#39A900;
+}
+.grid{
+    display:grid;
+    grid-template-columns:repeat(20,30px);
+    gap:4px;
+    margin-bottom:15px;
+}
+.cell{
+    width:30px;
+    height:30px;
+    background:#00324D;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-weight:bold;
+    border-radius:5px;
+    cursor:pointer;
+    transition:0.2s;
+}
+.cell:hover{
+    background:#39A900;
+    color:black;
+}
+.selected{
+    background:#39A900;
+    color:black;
+}
+.words{
+    columns:2;
+    font-size:14px;
+}
+footer{
+    text-align:center;
+    font-size:12px;
+    opacity:0.8;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+<h1>SOPA DE LETRAS · TGS</h1>
+
+<div class="grid" id="grid"></div>
+
+<div class="words">
+SISTEMA<br>
+SUBSISTEMA<br>
+ENTROPIA<br>
+SINERGIA<br>
+RETROALIMENTACION<br>
+HOMEOSTASIS<br>
+INTERDEPENDENCIA<br>
+ESTRUCTURA<br>
+ENTRADA<br>
+SALIDA
+</div>
+
+<footer>Diseño tecnológico · Estilo SENA 💚</footer>
+</div>
+
+<script>
+const matrix = [
+"SINERGIAQWERTYUIOPASDF",
+"RETROALIMENTACIONZXCV",
+"SISTEMAKLMNBVQWERTYUI",
+"HOMEOSTASISASDFGHJKLZ",
+"INTERDEPENDENCIAQWER",
+"SUBSISTEMAZXCVBNMASDF",
+"ENTRADAQWERTYUIOPASD",
+"ESTRUCTURAZXCVBNMLKJ",
+"ENTROPIAQWERTYUIOPAS",
+"SALIDAASDFGHJKLQWERT",
+"QWERTYUIOPASDF"
+];
+
+const grid = document.getElementById("grid");
+
+matrix.forEach(row=>{
+    row.split("").forEach(letter=>{
+        const cell=document.createElement("div");
+        cell.className="cell";
+        cell.textContent=letter;
+        cell.onclick=()=>cell.classList.toggle("selected");
+        grid.appendChild(cell);
+    });
+});
+</script>
+
+</body>
+</html>
