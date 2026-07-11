@@ -1,7 +1,8 @@
 ### Propuesta de un modelo de gestión del conocimiento que fortalezca los procesos de la línea de software del SENA Neiva
 
 **Idea principal:** La idea principal de la propuesta en general es generar una herramienta / procesos para fortaleces los procesos de la linea de software (en cuanto a conocimientos se refiere), el conocimiento dejaria de depender de las personas logrando que a pesar de que se retire de la institucion el conocimiento siga almacenado basandose en el modelo Open Access.
-    **Sintesis analisis general:** No es suficiente producir conocimiento; las instituciones deben contar con mecanismos organizados para almacenarlo, preservarlo, difundirlo y reutilizarlo.
+
+   **Sintesis analisis general:** No es suficiente producir conocimiento; las instituciones deben contar con mecanismos organizados para almacenarlo, preservarlo, difundirlo y reutilizarlo.
 
 **Gira en torno a:** Repositorios 
 
