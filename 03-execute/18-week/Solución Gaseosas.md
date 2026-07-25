@@ -23,3 +23,12 @@ Para resolver el problema de la falta de stock en productos especificos se reali
 ### Solucion Problema No. 2
 
 Para resolver el problema de el vencimiento en antiguos productos se realizo el siguiente analisis:
+
+La empresa al no brindarle capacitacion a los empleados, no se les dan indicaciones acerca de los sistemas que se usan, por consiguiente se haria el siguiente paso a paso:
+
+1. Si no se cuenta con un sistema de colas para el inventario se implementa.
+2. Se realizan capacitaciones para que los empleados organicen el inventario mediante este sistema.
+
+**Sistema de colas:**
+
+Al momento de recibir productos nuevos estos se dejan en cola hasta vender los antiguos productos.
