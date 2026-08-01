@@ -23,6 +23,8 @@ El usuario principal es el agente de la aerolinea
 - Procesos lentos durante el embarque
 - Reportes manuales
 
+Ademas de que al ser una aerolinea se debe hacer un sistema rapido, confiable, sostenible e intiutivo para no retrasar los ciclos completos de un tiquete aereo (definido en el archivo [Entendimiento.md](./Entendimiento.md))
+
 ### 2. Definir
 
 El problema central es que el agente necesita gestionar de manera rapida, segura y confiable todo el ciclo de un pasajero, evitando inconsistencias (como asignar el mismo asiento dos veces) y permitiendo identificar facilmente los pasajeros que no abordaron el vuelo
@@ -38,6 +40,8 @@ Posibles soluciones:
 - Reporte automatico de no-show
 - Mensajes de error claros
 - Confirmaciones antes de operaciones criticas
+
+(Las posibles soluciones planteadas no se desvian de lo propuesto en el [case-1.md](./case-1.md))
 
 ### 4. Prototipar
 

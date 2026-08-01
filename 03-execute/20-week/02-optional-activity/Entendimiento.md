@@ -105,7 +105,7 @@ Hay varias reglas que se tienen que seguir para desarrollar el sistema:
 
 #### 1. Un vuelo se identifica por
 
-Número de vuelo  
+Numero de vuelo  
 +  
 Fecha de salida
 
