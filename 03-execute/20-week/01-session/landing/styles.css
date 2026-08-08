@@ -1,0 +1,403 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+/* ============================================================
+   CSS Variables – Dark (default) & Light themes
+   ============================================================ */
+:root {
+    /* ── Balanced light: warm off-white, high diagram contrast ── */
+    --bg-main: #fafbfc;
+    --bg-sec: #f1f4f8;
+    --bg-card: rgba(255,255,255,.85);
+    --bg-card-solid: #ffffff;
+    --text-main: #1a2332;
+    --text-sec: #5a6a7e;
+    --accent: #2563eb;
+    --accent-glow: rgba(37,99,235,.05);
+    --accent2: #e85d24;
+    --accent3: #7c3aed;
+    --border: #e2e7ef;
+    --editor-bar: #232d3f;
+    --shadow-heavy: 0 6px 28px -6px rgba(15,23,42,.1);
+
+    /* Diagram viewport gets its own dark background */
+    --diagram-bg: #1b2432;
+    --diagram-dots: rgba(100,130,170,.18);
+
+    /* SVG tokens — designed for dark diagram canvas */
+    --ent-fill: #243347;
+    --ent-stroke: #5b9cf5;
+    --ent-weak-stroke: #f5a623;
+    --ent-assoc-stroke: #a78bfa;
+    --rel-fill: #2d2252;
+    --rel-stroke: #d08ef7;
+    --attr-fill: #1e2d42;
+    --attr-stroke: #6b89ab;
+    --line-color: #4a6178;
+    --text-svg: #dce5ef;
+    --card-text: #5a6a7e;
+
+    --transition: .3s cubic-bezier(.4,0,.2,1);
+}
+
+[data-theme="dark"] {
+    --bg-main: #0c1220;
+    --bg-sec: #141e30;
+    --bg-card: rgba(20,30,48,.8);
+    --bg-card-solid: #141e30;
+    --text-main: #e8edf4;
+    --text-sec: #8899ad;
+    --accent: #5b9cf5;
+    --accent-glow: rgba(91,156,245,.08);
+    --accent2: #f5a623;
+    --accent3: #a78bfa;
+    --border: rgba(60,75,95,.65);
+    --editor-bar: #0f1926;
+    --shadow-heavy: 0 16px 45px -12px rgba(0,0,0,.5);
+
+    --diagram-bg: #0f1926;
+    --diagram-dots: rgba(70,100,140,.2);
+
+    --ent-fill: #1a2840;
+    --ent-stroke: #5b9cf5;
+    --ent-weak-stroke: #f5a623;
+    --ent-assoc-stroke: #a78bfa;
+    --rel-fill: #261e4a;
+    --rel-stroke: #c084fc;
+    --attr-fill: #162238;
+    --attr-stroke: #506880;
+    --line-color: #3e5570;
+    --text-svg: #d4dde8;
+    --card-text: #8899ad;
+}
+
+/* ============================================================
+   Reset & Base
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: var(--bg-main);
+    color: var(--text-main);
+    line-height: 1.65;
+    overflow-x: hidden;
+    transition: background var(--transition), color var(--transition);
+}
+
+h1,h2,h3,h4 { font-weight: 700; line-height: 1.15; }
+a { color: var(--accent); text-decoration: none; }
+
+.container { max-width: 1320px; margin: 0 auto; padding: 0 clamp(16px,4vw,48px); }
+
+/* ============================================================
+   Header
+   ============================================================ */
+header {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(255,255,255,.85);
+    backdrop-filter: blur(18px);
+    border-bottom: 1px solid var(--border);
+    transition: background var(--transition);
+}
+[data-theme="dark"] header { background: rgba(15,23,42,.85); }
+
+header .container {
+    display: flex; justify-content: space-between; align-items: center;
+    height: 70px;
+}
+
+.logo {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.35rem; font-weight: 700;
+    display: flex; align-items: center; gap: .55rem;
+    letter-spacing: -.02em;
+}
+.logo i { color: var(--accent); font-size: 1.1rem; }
+.logo span { color: var(--accent); }
+
+nav { display: flex; gap: 2rem; }
+nav a {
+    font-size: .85rem; font-weight: 600; color: var(--text-sec);
+    position: relative; transition: color var(--transition);
+}
+nav a::after {
+    content: ''; position: absolute; left: 0; right: 100%; bottom: -4px;
+    height: 2px; background: var(--accent); transition: right .25s ease;
+}
+nav a:hover { color: var(--text-main); }
+nav a:hover::after { right: 0; }
+
+.theme-toggle {
+    background: none; border: 1px solid var(--border); color: var(--text-main);
+    cursor: pointer; font-size: 1rem; width: 40px; height: 40px;
+    border-radius: 50%; display: grid; place-items: center;
+    transition: var(--transition);
+}
+.theme-toggle:hover { border-color: var(--accent); color: var(--accent); }
+
+/* ============================================================
+   Hero
+   ============================================================ */
+.hero {
+    padding: clamp(4rem,8vw,7rem) 0 clamp(2rem,4vw,4rem);
+    text-align: center;
+    position: relative;
+}
+.hero::before {
+    content: '';
+    position: absolute; top: -100px; left: 50%; width: 700px; height: 700px;
+    background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+    transform: translateX(-50%); pointer-events: none; z-index: 0;
+}
+.hero h1 {
+    position: relative; z-index: 1;
+    font-size: clamp(2.4rem,5.5vw,4rem);
+    letter-spacing: -.045em;
+    background: linear-gradient(135deg, var(--text-main) 35%, var(--accent));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 1.2rem;
+}
+.hero > p {
+    position: relative; z-index: 1;
+    font-size: clamp(1rem,1.8vw,1.25rem);
+    color: var(--text-sec); max-width: 740px; margin: 0 auto;
+}
+
+/* ============================================================
+   Tabs
+   ============================================================ */
+.tabs {
+    display: flex; justify-content: center; gap: .75rem;
+    margin: 2rem 0 2.5rem; flex-wrap: wrap;
+}
+.tab-btn {
+    background: var(--bg-sec); color: var(--text-sec);
+    border: 1px solid var(--border);
+    padding: .7rem 1.6rem; border-radius: 999px;
+    font-family: 'JetBrains Mono', monospace; font-size: .9rem;
+    cursor: pointer; transition: var(--transition);
+    position: relative; overflow: hidden;
+}
+.tab-btn::after {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(135deg, var(--accent), var(--accent3));
+    opacity: 0; transition: opacity .3s;
+}
+.tab-btn:hover { border-color: var(--accent); color: var(--text-main); }
+.tab-btn.active {
+    background: #eef2ff; color: #2563eb;
+    border-color: #c7d2fe; font-weight: 700;
+    box-shadow: 0 2px 8px rgba(37,99,235,.1);
+}
+[data-theme="dark"] .tab-btn.active {
+    background: #1e2d45; color: #5b9cf5;
+    border-color: #3a5580;
+    box-shadow: 0 2px 8px rgba(91,156,245,.12);
+}
+.tab-btn.active::after { display: none; }
+
+/* ============================================================
+   Editor Frame
+   ============================================================ */
+.editor-container {
+    background: var(--bg-card-solid);
+    border: 1px solid var(--border);
+    border-radius: 14px; overflow: hidden;
+    box-shadow: var(--shadow-heavy);
+    margin-bottom: 3.5rem;
+}
+.editor-header {
+    background: var(--editor-bar);
+    padding: .7rem 1.3rem;
+    display: flex; justify-content: space-between; align-items: center;
+    border-bottom: 1px solid var(--border);
+}
+.editor-dots { display: flex; gap: .45rem; }
+.dot { width: 13px; height: 13px; border-radius: 50%; }
+.dot.red   { background: #ef4444; }
+.dot.yellow { background: #eab308; }
+.dot.green  { background: #22c55e; }
+
+.editor-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: .8rem; color: #8899ad; letter-spacing: .02em;
+}
+.editor-tools { display: flex; gap: .8rem; }
+.editor-tools button {
+    background: none; border: none; color: #8899ad;
+    cursor: pointer; font-size: .85rem; transition: var(--transition);
+}
+.editor-tools button:hover { color: #5b9cf5; }
+
+.diagram-viewport {
+    width: 100%; height: 72vh; min-height: 420px;
+    overflow: hidden; position: relative;
+    background-color: var(--diagram-bg);
+    background-image: radial-gradient(var(--diagram-dots) 1px, transparent 1px);
+    background-size: 22px 22px;
+    cursor: grab; user-select: none;
+}
+.diagram-viewport:active { cursor: grabbing; }
+
+.svg-container {
+    transform-origin: 0 0;
+    transition: none;        /* No transition while dragging */
+}
+
+/* ============================================================
+   SVG Diagram Styles
+   ============================================================ */
+
+/* Lines (connecting) */
+.svg-line {
+    stroke: var(--line-color); stroke-width: 2;
+    stroke-linecap: round;
+}
+
+/* Attribute ellipses */
+.svg-attr-ellipse {
+    fill: var(--attr-fill); stroke: var(--attr-stroke); stroke-width: 1.8;
+}
+.svg-attr-text {
+    fill: var(--text-svg); font-family: 'Inter', sans-serif; font-size: 11px;
+    text-anchor: middle; dominant-baseline: central;
+}
+.svg-attr-text.pk {
+    text-decoration: underline; font-weight: 700;
+    fill: var(--accent2);
+}
+
+/* Relationship diamonds */
+.svg-rel-diamond {
+    fill: var(--rel-fill); stroke: var(--rel-stroke); stroke-width: 2;
+}
+.svg-rel-text {
+    fill: var(--text-svg); font-family: 'Inter', sans-serif; font-size: 11px;
+    text-anchor: middle; dominant-baseline: central; font-weight: 500;
+}
+
+/* Entity rectangles */
+.svg-ent-rect {
+    fill: var(--ent-fill); stroke: var(--ent-stroke); stroke-width: 2.5;
+}
+.svg-ent-weak {
+    stroke: var(--ent-weak-stroke);
+}
+.svg-ent-outer-weak {
+    fill: none; stroke: var(--ent-weak-stroke); stroke-width: 2; stroke-dasharray: none;
+}
+.svg-ent-assoc {
+    stroke: var(--ent-assoc-stroke); stroke-width: 2.4;
+}
+.svg-assoc-diamond {
+    fill: var(--rel-fill); stroke: var(--ent-assoc-stroke); stroke-width: 1.5; opacity: .45;
+}
+.svg-ent-text {
+    fill: var(--text-svg); font-family: 'JetBrains Mono', monospace;
+    font-size: 12px; font-weight: 700; text-anchor: middle; dominant-baseline: central;
+    letter-spacing: .03em;
+}
+
+/* Cardinality labels */
+.svg-cardinality {
+    fill: var(--accent2); font-family: 'JetBrains Mono', monospace;
+    font-size: 12px; font-weight: 700;
+}
+
+/* ============================================================
+   Case Content (insights below diagram)
+   ============================================================ */
+.case-content { display: none; }
+.case-content.active {
+    display: block;
+    animation: fadeSlideUp .45s ease both;
+}
+
+@keyframes fadeSlideUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.insights {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem; margin-bottom: 4rem;
+}
+
+.card {
+    background: var(--bg-card);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--border);
+    border-radius: 14px; padding: 1.8rem;
+    position: relative; overflow: hidden;
+    transition: transform .35s ease, box-shadow .35s ease;
+}
+.card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, var(--accent), var(--accent3));
+    transform: scaleX(0); transform-origin: left;
+    transition: transform .4s ease;
+}
+.card:hover::before { transform: scaleX(1); }
+.card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 22px 40px -12px rgba(0,0,0,.22);
+}
+.card h3 {
+    margin-bottom: .85rem; font-size: 1.05rem;
+    display: flex; align-items: center; gap: .65rem;
+}
+.card h3 i { color: var(--accent); font-size: .95rem; }
+.card p { color: var(--card-text); font-size: .92rem; line-height: 1.7; }
+.card strong { color: var(--text-main); }
+
+/* ============================================================
+   Legend / Conventions
+   ============================================================ */
+.legend-section {
+    padding: 4.5rem 0; border-top: 1px solid var(--border);
+}
+.legend-section h2 {
+    text-align: center; margin-bottom: 2.8rem;
+    font-size: clamp(1.6rem,3vw,2.2rem);
+    letter-spacing: -.03em;
+}
+
+.legend-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 2rem;
+}
+.legend-item {
+    display: flex; flex-direction: column; align-items: center;
+    text-align: center; gap: .85rem;
+}
+.legend-item svg { width: 130px; height: 85px; }
+.legend-item p { font-size: .88rem; color: var(--text-sec); font-weight: 500; }
+
+/* ============================================================
+   Footer
+   ============================================================ */
+footer {
+    padding: 2.5rem 0; text-align: center;
+    border-top: 1px solid var(--border); color: var(--text-sec);
+    margin-top: 3rem; font-size: .85rem;
+}
+
+/* ============================================================
+   Responsive
+   ============================================================ */
+@media (max-width: 768px) {
+    .hero h1 { font-size: 2.2rem; }
+    .tabs { gap: .5rem; }
+    .tab-btn { width: 100%; text-align: center; font-size: .85rem; padding: .6rem 1rem; }
+    .diagram-viewport { height: 55vh; min-height: 320px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after { animation-duration: 0s !important; transition-duration: 0s !important; }
+}

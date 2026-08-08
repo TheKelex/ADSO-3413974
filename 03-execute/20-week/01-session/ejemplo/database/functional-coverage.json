@@ -1,0 +1,73 @@
+{
+  "requirements": [
+    {
+      "requirement": "The agent authenticates with username and password and receives a session token; invalid credentials return an authentication error in Spanish.",
+      "storage_required": true,
+      "physical_objects": ["user"],
+      "fields": ["username", "password_hash", "role"],
+      "implementation_files": ["database/migrations/0001_extensions_and_user.up.sql", "database/seed/0001_seed_admin.sql"],
+      "test_files": ["database/tests/schema_assertions.mjs"]
+    },
+    {
+      "requirement": "The agent creates and lists passengers with document, name, and birth_date.",
+      "storage_required": true,
+      "physical_objects": ["passenger"],
+      "fields": ["document", "name", "birth_date"],
+      "implementation_files": ["database/migrations/0002_create_passenger.up.sql"],
+      "test_files": ["database/tests/schema_assertions.mjs"]
+    },
+    {
+      "requirement": "The agent creates reservations for a passenger and lists them with their status.",
+      "storage_required": true,
+      "physical_objects": ["reservation"],
+      "fields": ["code", "passenger_document", "status"],
+      "implementation_files": ["database/migrations/0005_create_reservation.up.sql"],
+      "test_files": ["database/tests/schema_assertions.mjs"]
+    },
+    {
+      "requirement": "The agent issues a ticket from a reservation with an issue_date and service_class.",
+      "storage_required": true,
+      "physical_objects": ["ticket"],
+      "fields": ["number", "reservation_code", "issue_date", "service_class"],
+      "implementation_files": ["database/migrations/0006_create_ticket.up.sql"],
+      "test_files": ["database/tests/schema_assertions.mjs"]
+    },
+    {
+      "requirement": "The agent creates flights identified by flight_number plus departure_date, with a distinct origin airport and destination airport and an assigned aircraft.",
+      "storage_required": true,
+      "physical_objects": ["flight"],
+      "fields": ["flight_number", "departure_date", "origin_airport_code", "destination_airport_code", "aircraft_registration"],
+      "implementation_files": ["database/migrations/0007_create_flight.up.sql"],
+      "test_files": ["database/tests/schema_assertions.mjs"]
+    },
+    {
+      "requirement": "The agent assigns a seat of the flight's aircraft to a ticketed passenger; the same seat cannot be assigned twice on the same flight.",
+      "storage_required": true,
+      "physical_objects": ["seat_assignment", "seat"],
+      "fields": ["seat_number", "aircraft_registration", "passenger_document", "flight_number"],
+      "implementation_files": ["database/migrations/0009_create_seat_assignment.up.sql", "database/migrations/0008_create_seat.up.sql"],
+      "test_files": ["database/tests/schema_assertions.mjs"]
+    },
+    {
+      "requirement": "The agent registers zero or more baggage items and an optional payment for a ticket.",
+      "storage_required": true,
+      "physical_objects": ["baggage", "payment"],
+      "fields": ["tag", "weight", "reference", "amount"],
+      "implementation_files": ["database/migrations/0010_create_ticket_extras.up.sql"],
+      "test_files": ["database/tests/schema_assertions.mjs"]
+    },
+    {
+      "requirement": "The agent registers the boarding of a passenger for a flight, which is optional.",
+      "storage_required": true,
+      "physical_objects": ["boarding"],
+      "fields": ["ticket_number", "entry_time", "gate"],
+      "implementation_files": ["database/migrations/0010_create_ticket_extras.up.sql"],
+      "test_files": ["database/tests/schema_assertions.mjs"]
+    },
+    {
+      "requirement": "The agent queries the report of ticketed passengers with no boarding record (no-show) for a given flight.",
+      "storage_required": false,
+      "rationale": "The no-show report is a read-only aggregation over ticket and boarding (a ticketed passenger with no boarding row); it introduces no new persistent storage."
+    }
+  ]
+}
