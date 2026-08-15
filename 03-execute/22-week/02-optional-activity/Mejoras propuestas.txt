@@ -1,0 +1,7 @@
+Mejoras propuestas:
+
+1. Panel Mi Horario, vista de instructores para el aprendiz, este panel no se actualizo, este panel no se modifico probablemente por el exceso de información que podría generar confusion en los usuarios
+
+2. Apartado de notificaciones con estados incorrectos, este apartado no se cambio para garantizar que se de el aviso general a todos los aprendices
+
+3. Vista avance curricular para los aprendices, este apartado no fue implementado debido a que estos datos se pueden consultar en Sofia Plus
