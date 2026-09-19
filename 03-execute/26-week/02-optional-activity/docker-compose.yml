@@ -1,0 +1,110 @@
+version: '3.9'
+
+services:
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root_password}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-workshop}
+      MYSQL_USER: ${MYSQL_USER:-workshop_app}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-replace_with_secure_password}
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+
+  db-init:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root_password}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-workshop}
+      MYSQL_USER: ${MYSQL_USER:-workshop_app}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-replace_with_secure_password}
+      ADMIN_USERNAME: ${ADMIN_USERNAME:-admin}
+      ADMIN_FULL_NAME: ${ADMIN_FULL_NAME:-Administrador del taller}
+      ADMIN_PASSWORD_HASH: ${ADMIN_PASSWORD_HASH:-$$2a$$10$$l6MHGFLFig59/CZavFTJl.a6Y6RYTf7Rw.iboJv.Uws6tfS3E58cq}
+      TECHNICIAN_ONE_USERNAME: ${TECHNICIAN_ONE_USERNAME:-jperez}
+      TECHNICIAN_ONE_FULL_NAME: ${TECHNICIAN_ONE_FULL_NAME:-Juan Perez}
+      TECHNICIAN_ONE_SPECIALTY: ${TECHNICIAN_ONE_SPECIALTY:-Motor y transmision}
+      TECHNICIAN_ONE_PASSWORD_HASH: ${TECHNICIAN_ONE_PASSWORD_HASH:-$$2b$$10$$MHpQ6imoFyylfYb9ODBdp.lEZ5TViy6IvYPnHxFNp3FpTdLBJ.TXa}
+      TECHNICIAN_TWO_USERNAME: ${TECHNICIAN_TWO_USERNAME:-lramirez}
+      TECHNICIAN_TWO_FULL_NAME: ${TECHNICIAN_TWO_FULL_NAME:-Laura Ramirez}
+      TECHNICIAN_TWO_SPECIALTY: ${TECHNICIAN_TWO_SPECIALTY:-Frenos y suspension}
+      TECHNICIAN_TWO_PASSWORD_HASH: ${TECHNICIAN_TWO_PASSWORD_HASH:-$$2b$$10$$V23c9OCiO5PhhVpLdaLMMe7QznzzQChi4Gmn.9ozftVnJNfDGz.vK}
+    volumes:
+      - ./database/migrations:/migrations:ro
+      - ./database/seed:/seed:ro
+    networks:
+      - app-network
+    depends_on:
+      db:
+        condition: service_healthy
+    command:
+      - /bin/sh
+      - -c
+      - |
+        set -eu
+        mysql_args="-h db -u$$MYSQL_USER -p$$MYSQL_PASSWORD $$MYSQL_DATABASE"
+        for migration in /migrations/*.up.sql; do
+          mysql $$mysql_args < "$$migration"
+        done
+        {
+          printf "SET @admin_username = '%s';\n" "$$ADMIN_USERNAME"
+          printf "SET @admin_full_name = '%s';\n" "$$ADMIN_FULL_NAME"
+          printf "SET @admin_password_hash = '%s';\n" "$$ADMIN_PASSWORD_HASH"
+          printf "SET @technician_one_username = '%s';\n" "$$TECHNICIAN_ONE_USERNAME"
+          printf "SET @technician_one_full_name = '%s';\n" "$$TECHNICIAN_ONE_FULL_NAME"
+          printf "SET @technician_one_specialty = '%s';\n" "$$TECHNICIAN_ONE_SPECIALTY"
+          printf "SET @technician_one_password_hash = '%s';\n" "$$TECHNICIAN_ONE_PASSWORD_HASH"
+          printf "SET @technician_two_username = '%s';\n" "$$TECHNICIAN_TWO_USERNAME"
+          printf "SET @technician_two_full_name = '%s';\n" "$$TECHNICIAN_TWO_FULL_NAME"
+          printf "SET @technician_two_specialty = '%s';\n" "$$TECHNICIAN_TWO_SPECIALTY"
+          printf "SET @technician_two_password_hash = '%s';\n" "$$TECHNICIAN_TWO_PASSWORD_HASH"
+          cat /seed/0001_seed_bootstrap.sql
+        } | mysql $$mysql_args
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      MYSQL_HOST: db
+      MYSQL_PORT: 3306
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-workshop}
+      MYSQL_USER: ${MYSQL_USER:-workshop_app}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-replace_with_secure_password}
+      HTTP_PORT: 8080
+      ALLOWED_ORIGIN: http://localhost
+      REQUEST_TIMEOUT_SECOND: 15
+      DATABASE_TIMEOUT_SECOND: 5
+      TOKEN_SECRET: replace_with_long_random_token_secret
+      TOKEN_TTL_MINUTE: 480
+    depends_on:
+      db-init:
+        condition: service_completed_successfully
+    networks:
+      - app-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "80:8080"
+    depends_on:
+      - backend
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  db_data:

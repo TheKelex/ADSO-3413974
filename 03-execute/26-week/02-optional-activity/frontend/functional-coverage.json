@@ -1,0 +1,201 @@
+{
+  "requirements": [
+    {
+      "requirement": "A user signs in with username and password and receives a session token; invalid credentials are rejected with an explicit error and no token is issued.",
+      "screens": ["login"],
+      "user_flows": ["Sign in with valid credentials", "Sign in with a wrong password and read the Spanish error"],
+      "states": ["loading", "error", "empty", "success"],
+      "implementation_files": [
+        "frontend/src/features/login/LoginPage.tsx",
+        "frontend/src/shared/SessionContext.tsx",
+        "frontend/src/app/ProtectedRoute.tsx"
+      ],
+      "api_contract_files": [
+        "frontend/src/services/session_service.ts",
+        "frontend/src/services/api_client.ts"
+      ],
+      "test_files": [
+        "frontend/src/features/login/LoginPage.test.tsx",
+        "frontend/src/services/api_client.test.ts"
+      ]
+    },
+    {
+      "requirement": "An administrator creates a customer with name, national document, phone and email, and lists the registered customers.",
+      "screens": ["customers"],
+      "user_flows": ["Register a customer from the form", "Read the customer table"],
+      "states": ["loading", "error", "empty", "success"],
+      "implementation_files": [
+        "frontend/src/features/customer/CustomerPage.tsx",
+        "frontend/src/shared/DataState.tsx"
+      ],
+      "api_contract_files": [
+        "frontend/src/services/customer_service.ts",
+        "frontend/src/services/api_client.ts"
+      ],
+      "test_files": ["frontend/src/services/api_client.test.ts"]
+    },
+    {
+      "requirement": "An administrator registers a vehicle owned by an existing customer with plate, VIN, brand, model and year; a duplicate plate or a duplicate VIN is rejected.",
+      "screens": ["vehicles"],
+      "user_flows": [
+        "Register a vehicle choosing its owner from the real customer list",
+        "Read the rejection when the plate or the VIN already exists"
+      ],
+      "states": ["loading", "error", "empty", "success"],
+      "implementation_files": [
+        "frontend/src/features/vehicle/VehiclePage.tsx",
+        "frontend/src/shared/DataState.tsx"
+      ],
+      "api_contract_files": [
+        "frontend/src/services/vehicle_service.ts",
+        "frontend/src/services/api_client.ts"
+      ],
+      "test_files": ["frontend/src/services/api_client.test.ts"]
+    },
+    {
+      "requirement": "An administrator opens a service order for a vehicle at check-in with the failure reported by the customer and the reception date; the order is created in RECEIVED status.",
+      "screens": ["service-orders"],
+      "user_flows": ["Open a service order from the check-in form", "Filter the order list by status"],
+      "states": ["loading", "error", "empty", "success"],
+      "implementation_files": [
+        "frontend/src/features/service-order/ServiceOrderPage.tsx",
+        "frontend/src/shared/StatusBadge.tsx"
+      ],
+      "api_contract_files": [
+        "frontend/src/services/service_order_service.ts",
+        "frontend/src/services/api_client.ts"
+      ],
+      "test_files": ["frontend/src/features/service-order/ServiceOrderPage.test.tsx"]
+    },
+    {
+      "requirement": "An administrator assigns a technician to a service order; the assignment is rejected when that technician already holds a service order that has not reached DELIVERED.",
+      "screens": ["service-order-detail", "technicians"],
+      "user_flows": [
+        "Assign an available technician from the allocation panel",
+        "Read the Spanish rejection when the technician is already busy"
+      ],
+      "states": ["loading", "error", "empty", "success"],
+      "implementation_files": [
+        "frontend/src/features/service-order/AssignmentPanel.tsx",
+        "frontend/src/features/technician/TechnicianPage.tsx",
+        "frontend/src/shared/StatusBadge.tsx"
+      ],
+      "api_contract_files": [
+        "frontend/src/services/service_order_service.ts",
+        "frontend/src/services/technician_service.ts"
+      ],
+      "test_files": [
+        "frontend/src/shared/StatusBadge.test.tsx",
+        "frontend/src/services/api_client.test.ts"
+      ]
+    },
+    {
+      "requirement": "The assigned technician records the diagnostic of a service order with the finding and the components to repair, which moves the order to IN_DIAGNOSIS.",
+      "screens": ["service-order-detail"],
+      "user_flows": [
+        "Record the diagnostic as the assigned technician",
+        "Read the stored diagnostic in the order detail"
+      ],
+      "states": ["loading", "error", "empty", "success"],
+      "implementation_files": [
+        "frontend/src/features/service-order/DiagnosticPanel.tsx",
+        "frontend/src/features/service-order/ServiceOrderDetailPage.tsx"
+      ],
+      "api_contract_files": ["frontend/src/services/service_order_service.ts"],
+      "test_files": ["frontend/src/features/service-order/ServiceOrderPage.test.tsx"]
+    },
+    {
+      "requirement": "The assigned technician registers an intervention on a service order with description, labor hours and the parts used; the first intervention moves the order to IN_REPAIR.",
+      "screens": ["service-order-detail"],
+      "user_flows": [
+        "Register an intervention adding one row per part used",
+        "Read the intervention list of the order"
+      ],
+      "states": ["loading", "error", "empty", "success"],
+      "implementation_files": [
+        "frontend/src/features/service-order/InterventionPanel.tsx",
+        "frontend/src/features/service-order/ServiceOrderDetailPage.tsx"
+      ],
+      "api_contract_files": ["frontend/src/services/service_order_service.ts"],
+      "test_files": ["frontend/src/features/service-order/ServiceOrderPage.test.tsx"]
+    },
+    {
+      "requirement": "A service order advances from IN_REPAIR to READY and from READY to DELIVERED; a transition outside the declared lifecycle is rejected and the order keeps its previous status.",
+      "screens": ["service-order-detail"],
+      "user_flows": [
+        "Advance the order with the button that offers only the next declared status",
+        "Read the Spanish rejection when the backend refuses the transition"
+      ],
+      "states": ["loading", "error", "empty", "success"],
+      "implementation_files": [
+        "frontend/src/features/service-order/ServiceOrderDetailPage.tsx",
+        "frontend/src/shared/format.ts"
+      ],
+      "api_contract_files": ["frontend/src/services/service_order_service.ts"],
+      "test_files": ["frontend/src/shared/StatusBadge.test.tsx"]
+    },
+    {
+      "requirement": "Every service order status change is persisted as a transition record with the previous status, the new status, the author and the timestamp.",
+      "screens": ["service-order-detail"],
+      "user_flows": ["Read the status history panel of the order after an advance"],
+      "states": ["loading", "error", "empty", "success"],
+      "implementation_files": [
+        "frontend/src/features/service-order/StatusHistoryPanel.tsx",
+        "frontend/src/shared/StatusBadge.tsx"
+      ],
+      "api_contract_files": ["frontend/src/services/service_order_service.ts"],
+      "test_files": ["frontend/src/shared/StatusBadge.test.tsx"]
+    },
+    {
+      "requirement": "An administrator issues a warranty over an intervention with kind LABOR or PART and a coverage in months; the expiration date is computed as the issue date plus the coverage.",
+      "screens": ["service-order-detail", "warranties"],
+      "user_flows": ["Issue a warranty from a recorded intervention", "Read the issued warranty in the warranty table"],
+      "states": ["loading", "error", "empty", "success"],
+      "implementation_files": [
+        "frontend/src/features/service-order/InterventionPanel.tsx",
+        "frontend/src/features/warranty/WarrantyPage.tsx"
+      ],
+      "api_contract_files": ["frontend/src/services/warranty_service.ts"],
+      "test_files": ["frontend/src/features/warranty/WarrantyPage.test.tsx"]
+    },
+    {
+      "requirement": "The system reports for any warranty whether it is valid or expired at the date being consulted, comparing that date against the expiration date.",
+      "screens": ["warranties"],
+      "user_flows": ["Choose a consultation date and read the valid or expired badge of each warranty"],
+      "states": ["loading", "error", "empty", "success"],
+      "implementation_files": [
+        "frontend/src/features/warranty/WarrantyPage.tsx",
+        "frontend/src/shared/StatusBadge.tsx"
+      ],
+      "api_contract_files": ["frontend/src/services/warranty_service.ts"],
+      "test_files": [
+        "frontend/src/features/warranty/WarrantyPage.test.tsx",
+        "frontend/src/shared/StatusBadge.test.tsx"
+      ]
+    },
+    {
+      "requirement": "An administrator consults the clinical timeline of a vehicle and reads, in chronological order, its service orders, diagnostics, interventions and warranties.",
+      "screens": ["vehicle-timeline", "vehicles"],
+      "user_flows": ["Open the clinical history from a vehicle row", "Read the chronological entries of the vehicle"],
+      "states": ["loading", "error", "empty", "success"],
+      "implementation_files": [
+        "frontend/src/features/timeline/VehicleTimelinePage.tsx",
+        "frontend/src/shared/format.ts"
+      ],
+      "api_contract_files": ["frontend/src/services/timeline_service.ts"],
+      "test_files": ["frontend/src/shared/StatusBadge.test.tsx"]
+    },
+    {
+      "requirement": "An administrator reads a dashboard with the number of open service orders, the count of service orders grouped by status, and the technicians currently holding an active order.",
+      "screens": ["dashboard"],
+      "user_flows": ["Read the open order count and the card per status", "Read the table of occupied technicians"],
+      "states": ["loading", "error", "empty", "success"],
+      "implementation_files": [
+        "frontend/src/features/dashboard/DashboardPage.tsx",
+        "frontend/src/shared/StatusBadge.tsx"
+      ],
+      "api_contract_files": ["frontend/src/services/dashboard_service.ts"],
+      "test_files": ["frontend/src/shared/StatusBadge.test.tsx"]
+    }
+  ]
+}

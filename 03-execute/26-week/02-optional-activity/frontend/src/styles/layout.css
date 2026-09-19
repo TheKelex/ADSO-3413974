@@ -1,0 +1,112 @@
+/* Page skeleton: the header carries the brand colour, the content sits in a
+   centred column of cards over the neutral background. */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: var(--font-size-body);
+  line-height: 1.5;
+  color: var(--color-text);
+  background: var(--color-background);
+}
+
+.app-header {
+  background: var(--color-brand);
+  color: var(--color-brand-contrast);
+  padding: var(--space-3) var(--space-4);
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.app-header__brand {
+  font-size: var(--font-size-section);
+  font-weight: 600;
+  margin: 0;
+}
+
+.app-header__nav {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+  flex: 1;
+}
+
+.app-header__link {
+  color: var(--color-brand-contrast);
+  text-decoration: none;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-card);
+  min-height: var(--touch-target);
+  display: inline-flex;
+  align-items: center;
+}
+
+.app-header__link:hover {
+  background: var(--color-brand-dark);
+}
+
+.app-header__link--active {
+  background: var(--color-brand-dark);
+  font-weight: 600;
+}
+
+.app-header__user {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.app-main {
+  max-width: var(--content-width);
+  margin: 0 auto;
+  padding: var(--space-4);
+}
+
+.screen-title {
+  font-size: var(--font-size-screen);
+  font-weight: 600;
+  margin: 0 0 var(--space-4) 0;
+}
+
+.card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  padding: var(--space-4);
+  margin-bottom: var(--space-4);
+}
+
+.card__title {
+  font-size: var(--font-size-section);
+  font-weight: 600;
+  margin: 0 0 var(--space-3) 0;
+}
+
+.grid {
+  display: grid;
+  gap: var(--space-3);
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.table-scroll {
+  overflow-x: auto;
+}
+
+.login-layout {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-4);
+}
+
+.login-card {
+  width: 100%;
+  max-width: 400px;
+}
