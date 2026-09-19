@@ -1,0 +1,111 @@
+{
+  "requirements": [
+    {
+      "requirement": "A user signs in with username and password and receives a session token; invalid credentials are rejected with an explicit error and no token is issued.",
+      "storage_required": true,
+      "physical_objects": ["user"],
+      "fields": ["username", "password_hash", "role"],
+      "implementation_files": [
+        "database/migrations/0001_create_user.up.sql",
+        "database/seed/0001_seed_bootstrap.sql"
+      ],
+      "test_files": ["database/tests/schema_assertions.mjs"]
+    },
+    {
+      "requirement": "An administrator creates a customer with name, national document, phone and email, and lists the registered customers.",
+      "storage_required": true,
+      "physical_objects": ["customer"],
+      "fields": ["full_name", "document_number", "phone", "email"],
+      "implementation_files": ["database/migrations/0002_create_customer.up.sql"],
+      "test_files": ["database/tests/schema_assertions.mjs"]
+    },
+    {
+      "requirement": "An administrator registers a vehicle owned by an existing customer with plate, VIN, brand, model and year; a duplicate plate or a duplicate VIN is rejected.",
+      "storage_required": true,
+      "physical_objects": ["vehicle", "customer"],
+      "fields": ["customer_id", "plate", "vin", "brand", "model", "model_year"],
+      "implementation_files": ["database/migrations/0003_create_vehicle.up.sql"],
+      "test_files": ["database/tests/schema_assertions.mjs"]
+    },
+    {
+      "requirement": "An administrator opens a service order for a vehicle at check-in with the failure reported by the customer and the reception date; the order is created in RECEIVED status.",
+      "storage_required": true,
+      "physical_objects": ["service_order", "vehicle"],
+      "fields": ["order_number", "vehicle_id", "reported_failure", "status", "received_at"],
+      "implementation_files": ["database/migrations/0005_create_service_order.up.sql"],
+      "test_files": ["database/tests/schema_assertions.mjs"]
+    },
+    {
+      "requirement": "An administrator assigns a technician to a service order; the assignment is rejected when that technician already holds a service order that has not reached DELIVERED.",
+      "storage_required": true,
+      "physical_objects": ["assignment", "technician"],
+      "fields": ["service_order_id", "technician_id", "is_active", "active_marker", "assigned_at"],
+      "implementation_files": [
+        "database/migrations/0004_create_technician.up.sql",
+        "database/migrations/0006_create_assignment.up.sql"
+      ],
+      "test_files": ["database/tests/schema_assertions.mjs"]
+    },
+    {
+      "requirement": "The assigned technician records the diagnostic of a service order with the finding and the components to repair, which moves the order to IN_DIAGNOSIS.",
+      "storage_required": true,
+      "physical_objects": ["diagnostic", "service_order"],
+      "fields": ["service_order_id", "technician_id", "finding", "component_to_repair", "status"],
+      "implementation_files": [
+        "database/migrations/0007_create_diagnostic.up.sql",
+        "database/migrations/0005_create_service_order.up.sql"
+      ],
+      "test_files": ["database/tests/schema_assertions.mjs"]
+    },
+    {
+      "requirement": "The assigned technician registers an intervention on a service order with description, labor hours and the parts used; the first intervention moves the order to IN_REPAIR.",
+      "storage_required": true,
+      "physical_objects": ["intervention", "part_usage", "service_order"],
+      "fields": ["service_order_id", "technician_id", "description", "labor_hour_count", "part_name", "quantity"],
+      "implementation_files": [
+        "database/migrations/0008_create_intervention.up.sql",
+        "database/migrations/0009_create_part_usage.up.sql"
+      ],
+      "test_files": ["database/tests/schema_assertions.mjs"]
+    },
+    {
+      "requirement": "A service order advances from IN_REPAIR to READY and from READY to DELIVERED; a transition outside the declared lifecycle is rejected and the order keeps its previous status.",
+      "storage_required": true,
+      "physical_objects": ["service_order"],
+      "fields": ["status", "updated_at"],
+      "implementation_files": ["database/migrations/0005_create_service_order.up.sql"],
+      "test_files": ["database/tests/schema_assertions.mjs"]
+    },
+    {
+      "requirement": "Every service order status change is persisted as a transition record with the previous status, the new status, the author and the timestamp.",
+      "storage_required": true,
+      "physical_objects": ["status_transition", "user"],
+      "fields": ["service_order_id", "from_status", "to_status", "changed_by_user_id", "changed_at"],
+      "implementation_files": ["database/migrations/0011_create_status_transition.up.sql"],
+      "test_files": ["database/tests/schema_assertions.mjs"]
+    },
+    {
+      "requirement": "An administrator issues a warranty over an intervention with kind LABOR or PART and a coverage in months; the expiration date is computed as the issue date plus the coverage.",
+      "storage_required": true,
+      "physical_objects": ["warranty", "intervention"],
+      "fields": ["intervention_id", "warranty_kind", "coverage_month_count", "issued_at", "expiration_date"],
+      "implementation_files": ["database/migrations/0010_create_warranty.up.sql"],
+      "test_files": ["database/tests/schema_assertions.mjs"]
+    },
+    {
+      "requirement": "The system reports for any warranty whether it is valid or expired at the date being consulted, comparing that date against the expiration date.",
+      "storage_required": false,
+      "rationale": "Validity is a comparison between the consulted date and the persisted warranty.expiration_date served by ix_warranty_expiration_date; it introduces no new persistent storage."
+    },
+    {
+      "requirement": "An administrator consults the clinical timeline of a vehicle and reads, in chronological order, its service orders, diagnostics, interventions and warranties.",
+      "storage_required": false,
+      "rationale": "The timeline is a read-only chronological join over service_order, diagnostic, intervention, warranty and status_transition filtered by vehicle; it introduces no new persistent storage."
+    },
+    {
+      "requirement": "An administrator reads a dashboard with the number of open service orders, the count of service orders grouped by status, and the technicians currently holding an active order.",
+      "storage_required": false,
+      "rationale": "The dashboard is a read-only aggregation over service_order grouped by status and over assignment filtered by is_active; it introduces no new persistent storage."
+    }
+  ]
+}
