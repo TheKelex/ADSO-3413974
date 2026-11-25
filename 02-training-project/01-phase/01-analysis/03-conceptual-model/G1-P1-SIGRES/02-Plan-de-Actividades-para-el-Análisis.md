@@ -1,4 +1,4 @@
-# Plan de actividades para el análisis de SIGRES
+# Plan de actividades para el análisis
 
 **Objetivo:** analizar el alcance, los requisitos, los actores y los casos de uso de SIGRES.  
 **Metodología de referencia:** Scrum adaptado para organizar el análisis.  
