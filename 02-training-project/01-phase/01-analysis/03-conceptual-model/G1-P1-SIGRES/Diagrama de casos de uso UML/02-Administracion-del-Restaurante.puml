@@ -1,0 +1,31 @@
+@startuml
+left to right direction
+skinparam packageStyle rectangle
+skinparam shadowing false
+skinparam actorStyle stickman
+
+actor Administrador
+actor Gerente
+
+rectangle "SIGRES - Administración" {
+  usecase "Registrar usuarios" as UC01
+  usecase "Iniciar sesión" as UC02
+  usecase "Gestionar roles y permisos" as UC03
+  usecase "Administrar productos del menú" as UC08
+  usecase "Gestionar categorías del menú" as UC09
+  usecase "Gestionar inventario" as UC10
+  usecase "Generar alertas de inventario" as UC11
+  usecase "Generar reportes" as UC15
+}
+
+Administrador -- UC01
+Administrador -- UC02
+Administrador -- UC03
+Administrador -- UC08
+Administrador -- UC09
+Administrador -- UC10
+Administrador -- UC11
+Administrador -- UC15
+Gerente -- UC02
+Gerente -- UC15
+@enduml

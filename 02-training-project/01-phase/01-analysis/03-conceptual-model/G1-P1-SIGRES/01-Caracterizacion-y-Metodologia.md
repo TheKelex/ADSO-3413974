@@ -1,4 +1,4 @@
-# G1 · Producto 1 · Caracterización y selección de metodología
+# Caracterización y selección de metodología
 
 ## 1. Caracterización de la solucion
 

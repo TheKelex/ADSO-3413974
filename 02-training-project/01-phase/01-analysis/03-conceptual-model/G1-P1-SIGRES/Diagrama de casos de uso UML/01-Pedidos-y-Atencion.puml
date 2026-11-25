@@ -1,0 +1,36 @@
+@startuml
+left to right direction
+skinparam packageStyle rectangle
+skinparam shadowing false
+skinparam actorStyle stickman
+
+actor Mesero
+actor "Personal de cocina" as Cocina
+actor Cajero
+actor Cliente
+
+rectangle "SIGRES - Pedidos y atención" {
+  usecase "Registrar pedido" as UC04
+  usecase "Enviar pedido a cocina" as UC05
+  usecase "Consultar estado del pedido" as UC06
+  usecase "Actualizar estado del pedido" as UC07
+  usecase "Gestionar mesas" as UC14
+  usecase "Generar factura" as UC12
+  usecase "Procesar pago" as UC13
+  usecase "Ver menú digital por QR" as UC16
+  usecase "Consultar consumo actual" as UC17
+}
+
+Mesero -- UC04
+Mesero -- UC06
+Mesero -- UC14
+Cocina -- UC05
+Cocina -- UC07
+Cajero -- UC12
+Cajero -- UC13
+Cliente -- UC16
+Cliente -- UC17
+
+UC04 ..> UC05 : <<include>>\nAl confirmar, se envía a cocina
+UC17 ..> UC16 : <<extend>>\n[Si hay un pedido activo]
+@enduml
