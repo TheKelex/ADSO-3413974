@@ -1,0 +1,193 @@
+@startuml
+title SIGRES - Diseño de clases
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+hide empty members
+
+package "Acceso" {
+  class Usuario {
+    -id: int
+    -usuario: string
+    -hashContrasena: string
+    -activo: bool
+    +validarContrasena(clave: string): bool
+    +tienePermiso(codigo: string): bool
+  }
+  class Rol {
+    -id: int
+    -nombre: string
+    +asignarPermiso(permiso: Permiso): void
+  }
+  class Permiso {
+    -codigo: string
+    -descripcion: string
+    +permite(accion: string): bool
+  }
+}
+
+package "Pedidos y menú" {
+  class Pedido {
+    -id: int
+    -fechaHora: DateTime
+    -comensales: int
+    -estado: EstadoPedido
+    +agregarDetalle(detalle: DetallePedido): void
+    +calcularTotal(): decimal
+    +cambiarEstado(estado: EstadoPedido): void
+  }
+  class DetallePedido {
+    -cantidad: int
+    -precioUnitario: decimal
+    -nota: string
+    +calcularSubtotal(): decimal
+  }
+  class Mesa {
+    -numero: int
+    -capacidad: int
+    -estado: EstadoMesa
+    +ocupar(): void
+    +liberar(): void
+  }
+  class ProductoMenu {
+    -id: int
+    -nombre: string
+    -precio: decimal
+    -disponible: bool
+    +actualizarPrecio(precio: decimal): void
+    +estaDisponible(): bool
+  }
+  class CategoriaMenu {
+    -id: int
+    -nombre: string
+    -descripcion: string
+    +renombrar(nombre: string): void
+  }
+  class MenuQRService {
+    +obtenerMenu(categoria: int): List<ProductoMenu>
+    +obtenerConsumo(mesa: int): decimal
+  }
+  class GestionPedidoFacade <<Facade>> {
+    -inventario: ServicioInventario
+    -cocina: NotificadorCocina
+    +registrarPedido(mesa: Mesa, detalles: List<DetallePedido>): Pedido
+    +confirmarPedido(pedido: Pedido): void
+  }
+  class ServicioInventario {
+    +descontarInsumos(pedido: Pedido): void
+    +revisarMinimos(): List<AlertaInventario>
+  }
+  class NotificadorCocina {
+    +notificarNuevoPedido(pedido: Pedido): void
+    +publicarCambioEstado(pedido: Pedido): void
+  }
+  enum EstadoPedido {
+    Registrado
+    EnPreparacion
+    Listo
+    Entregado
+    Cancelado
+  }
+  enum EstadoMesa {
+    Disponible
+    Ocupada
+    Reservada
+  }
+}
+
+package "Caja y pagos" {
+  class Factura {
+    -numero: string
+    -fecha: DateTime
+    -subtotal: decimal
+    -impuestos: decimal
+    -total: decimal
+    +calcularTotal(): decimal
+    +marcarPagada(): void
+  }
+  class Pago {
+    -id: int
+    -fecha: DateTime
+    -monto: decimal
+    -propina: decimal
+    +registrar(metodo: MetodoPago): bool
+  }
+  interface MetodoPago <<Strategy>> {
+    +procesar(pago: Pago): bool
+  }
+  class PagoEfectivo {
+    +procesar(pago: Pago): bool
+    +calcularVuelto(recibido: decimal, total: decimal): decimal
+  }
+  class PagoTarjeta {
+    +procesar(pago: Pago): bool
+  }
+  class PagoTransferencia {
+    +procesar(pago: Pago): bool
+  }
+  class PagoBilleteraDigital {
+    +procesar(pago: Pago): bool
+  }
+}
+
+package "Inventario y reportes" {
+  class Insumo {
+    -id: int
+    -nombre: string
+    -existencia: decimal
+    -unidad: string
+    -minimo: decimal
+    +ajustarExistencia(cantidad: decimal): void
+    +estaBajoMinimo(): bool
+  }
+  class MovimientoInventario {
+    -id: int
+    -fecha: DateTime
+    -tipo: string
+    -cantidad: decimal
+    +registrar(): void
+  }
+  class AlertaInventario {
+    -id: int
+    -fecha: DateTime
+    -existenciaActual: decimal
+    -estado: string
+    +marcarAtendida(): void
+  }
+  class ReporteVentas {
+    -desde: Date
+    -hasta: Date
+    -totalVentas: decimal
+    +generar(desde: Date, hasta: Date): ReporteVentas
+  }
+}
+
+Rol "1" -- "0..*" Usuario : asigna
+Rol "0..*" -- "0..*" Permiso : autoriza
+Usuario "1" -- "0..*" Pedido : registra
+Mesa "1" -- "0..*" Pedido : recibe
+Pedido "1" *-- "1..*" DetallePedido : contiene
+ProductoMenu "1" -- "0..*" DetallePedido : seleccionado en
+CategoriaMenu "1" -- "0..*" ProductoMenu : clasifica
+Pedido "1" -- "0..1" Factura : genera
+Factura "1" -- "0..1" Pago : recibe
+Pago "0..*" --> "1" MetodoPago : usa
+Insumo "1" -- "0..*" MovimientoInventario : registra
+Insumo "1" -- "0..*" AlertaInventario : genera
+ReporteVentas ..> Factura : consulta
+MenuQRService ..> ProductoMenu : consulta
+MenuQRService ..> Pedido : consulta
+GestionPedidoFacade ..> ServicioInventario : coordina
+GestionPedidoFacade ..> NotificadorCocina : coordina
+GestionPedidoFacade ..> Pedido : registra
+GestionPedidoFacade ..> Mesa : actualiza
+ServicioInventario ..> Insumo : actualiza
+ServicioInventario ..> MovimientoInventario : registra
+ServicioInventario ..> AlertaInventario : genera
+
+MetodoPago <|.. PagoEfectivo
+MetodoPago <|.. PagoTarjeta
+MetodoPago <|.. PagoTransferencia
+MetodoPago <|.. PagoBilleteraDigital
+
+
+@enduml
