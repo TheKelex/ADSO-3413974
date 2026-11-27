@@ -1,0 +1,69 @@
+@startuml
+title SIGRES - Vista de componentes
+left to right direction
+skinparam componentStyle rectangle
+skinparam shadowing false
+
+component "App móvil\nReact Native" as Mobile
+component "Web administrativa\ny menú QR" as Web
+component "API Laravel" as API
+component "Autenticación\ny autorización" as Auth
+component "Pedidos y mesas" as Orders
+component "Menú e inventario" as MenuStock
+component "Caja y reportes" as CashReports
+component "Notificaciones de cocina" as Kitchen
+component "Acceso a datos" as Persistence
+database "MySQL 8+" as DB
+
+interface "IAuthAPI" as IAuthAPI
+interface "IOrdersAPI" as IOrdersAPI
+interface "IMenuAPI" as IMenuAPI
+interface "ICashReportsAPI" as ICashAPI
+interface "IMeseroUI" as IMeseroUI
+interface "IWebUI" as IWebUI
+interface "IQRMenuUI" as IQRUI
+interface "IAuthService" as IAuth
+interface "IOrderService" as IOrders
+interface "IMenuStockService" as IStock
+interface "ICashReportService" as ICash
+interface "IKitchenEvents" as IEvents
+interface "IRepositories" as IRepo
+
+Mobile - IMeseroUI
+Web - IWebUI
+Web - IQRUI
+Mobile --> IAuthAPI : requiere HTTPS
+Mobile --> IOrdersAPI : requiere HTTPS
+Mobile --> IMenuAPI : requiere HTTPS
+Web --> IAuthAPI : requiere HTTPS
+Web --> IOrdersAPI : requiere HTTPS
+Web --> IMenuAPI : requiere HTTPS
+Web --> ICashAPI : requiere HTTPS
+API - IAuthAPI
+API - IOrdersAPI
+API - IMenuAPI
+API - ICashAPI
+API --> IAuth : requiere IAuthService
+API --> IOrders : requiere IOrderService
+API --> IStock : requiere IMenuStockService
+API --> ICash : requiere ICashReportService
+Auth - IAuth
+Orders - IOrders
+MenuStock - IStock
+CashReports - ICash
+Orders --> IEvents : requiere IKitchenEvents
+Kitchen - IEvents
+Orders --> IStock : requiere IMenuStockService
+CashReports --> IOrders : requiere IOrderService
+Auth --> IRepo : requiere IRepositories
+Orders --> IRepo : requiere IRepositories
+MenuStock --> IRepo : requiere IRepositories
+CashReports --> IRepo : requiere IRepositories
+Kitchen --> IRepo : requiere IRepositories
+Persistence - IRepo
+Persistence --> DB : TCP 3306 privado
+
+note bottom of API
+  Provee contratos a los clientes.
+end note
+@enduml
