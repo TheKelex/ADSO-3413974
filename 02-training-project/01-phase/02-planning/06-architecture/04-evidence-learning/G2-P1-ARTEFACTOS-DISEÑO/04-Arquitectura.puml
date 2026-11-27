@@ -1,0 +1,49 @@
+@startuml
+title SIGRES - Arquitectura lógica
+left to right direction
+skinparam componentStyle rectangle
+skinparam shadowing false
+
+actor "Mesero / Cajero /\nAdministrador / Gerente" as Staff
+actor "Cliente QR" as Client
+
+package "Presentación" {
+  component "App móvil\nReact Native" as Mobile
+  component "Plataforma web\nHTML5 / CSS3 / JS" as Web
+  component "Menú QR\nWeb responsive" as QR
+}
+
+package "Aplicación · PHP / Laravel" {
+  component "API HTTPS\nREST + JSON" as API
+  component "Servicios de negocio\nPedidos · menú · caja · inventario" as Services
+  component "Autenticación\ny permisos" as Auth
+  component "Eventos de cocina\nWebSocket seguro a app / web" as Events
+  component "Acceso a datos\nORM / consultas parametrizadas" as DataAccess
+  component "Agente de respaldos\ndiario" as BackupAgent
+}
+
+database "MySQL 8+\nBase relacional" as DB
+cloud "Almacenamiento de respaldos\nubicación separada" as Backup
+
+Staff --> Mobile : HTTPS / JSON
+Staff --> Web : HTTPS / HTML
+Client --> QR : HTTPS / HTML
+Mobile --> API : HTTPS / JSON
+Web --> API : HTTPS / JSON
+QR --> API : HTTPS / JSON
+API --> Services : llamadas internas
+API --> Auth : autenticar / autorizar
+Services --> Events : emitir pedido
+Events --> Mobile : WSS / actualización
+Events --> Web : WSS / actualización
+Services --> DataAccess : repositorios
+Auth --> DataAccess : consulta usuarios / roles
+DataAccess --> DB : SQL parametrizado
+BackupAgent --> DB : MySQL/TCP 3306\nred privada local
+BackupAgent --> Backup : HTTPS/TLS 443\nrespaldo diario cifrado
+
+note bottom of DB
+  Transacciones ACID para pedidos
+  y operaciones de caja (RNF-19).
+end note
+@enduml
