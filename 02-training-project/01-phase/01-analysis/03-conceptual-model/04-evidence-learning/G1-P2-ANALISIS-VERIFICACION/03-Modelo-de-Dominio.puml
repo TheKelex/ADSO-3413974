@@ -1,0 +1,120 @@
+@startuml
+title SIGRES - Modelo de dominio
+skinparam classAttributeIconSize 0
+
+class Usuario {
+  nombre
+  estado
+}
+
+class Rol {
+  nombre
+  descripcion
+}
+
+class Permiso {
+  nombre
+  descripcion
+}
+
+class Pedido {
+  fechaHora
+  numeroComensales
+  estado
+}
+
+class Mesa {
+  numero
+  capacidad
+  estado
+}
+
+class DetallePedido {
+  cantidad
+  precioUnitario
+  nota
+}
+
+class ProductoMenu {
+  nombre
+  precio
+  disponible
+}
+
+class CategoriaMenu {
+  nombre
+  descripcion
+}
+
+class Factura {
+  numero
+  fecha
+  subtotal
+  impuestos
+  total
+}
+
+class Pago {
+  fecha
+  metodo
+  monto
+  propina
+}
+
+class Insumo {
+  nombre
+  categoria
+  existencia
+  unidad
+  minimo
+  costoUnitario
+  proveedor
+}
+
+class MovimientoInventario {
+  fecha
+  tipo
+  cantidad
+}
+
+class AlertaInventario {
+  fecha
+  existenciaActual
+  existenciaMinima
+  estado
+}
+
+Rol "0..*" -- "0..*" Usuario : asignado a
+Rol "0..*" -- "0..*" Permiso : autoriza
+Usuario "1" -- "0..*" Pedido : registra
+Mesa "1" -- "0..*" Pedido : recibe
+Pedido "1" *-- "1..*" DetallePedido
+ProductoMenu "1" -- "0..*" DetallePedido : incluido en
+CategoriaMenu "1" -- "0..*" ProductoMenu : clasifica
+Pedido "1" -- "0..1" Factura : genera
+Factura "1" -- "0..*" Pago : recibe
+Insumo "1" -- "0..*" MovimientoInventario : registra
+Pedido "0..1" -- "0..*" MovimientoInventario : puede generar
+Insumo "1" -- "0..*" AlertaInventario : genera
+
+note right of DetallePedido
+  Clase asociativa entre Pedido
+  y ProductoMenu.
+end note
+
+note bottom of MovimientoInventario
+  El SRS no especifica qué insumos
+  consume cada producto del menú.
+  Confirmar esa relación.
+end note
+
+note bottom of Pago
+  El SRS no define si una factura
+  admite pagos parciales.
+end note
+
+note bottom of Rol
+  El SRS no precisa cuántos roles
+  puede tener cada usuario.
+end note
+@enduml

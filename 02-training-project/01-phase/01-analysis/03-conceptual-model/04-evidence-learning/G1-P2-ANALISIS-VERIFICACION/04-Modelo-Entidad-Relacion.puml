@@ -1,0 +1,156 @@
+@startuml
+title SIGRES - Modelo entidad-relación
+hide circle
+
+entity "USUARIO" as USUARIO {
+  * usuario_id : identificador <<PK>>
+  --
+  nombre : texto
+  estado : texto
+}
+
+entity "ROL" as ROL {
+  * rol_id : identificador <<PK>>
+  --
+  nombre : texto
+  descripcion : texto
+}
+
+entity "PERMISO" as PERMISO {
+  * permiso_id : identificador <<PK>>
+  --
+  nombre : texto
+  descripcion : texto
+}
+
+entity "ROL_PERMISO" as ROL_PERMISO {
+  * rol_id : identificador <<PK, FK>>
+  * permiso_id : identificador <<PK, FK>>
+}
+
+entity "USUARIO_ROL" as USUARIO_ROL {
+  * usuario_id : identificador <<PK, FK>>
+  * rol_id : identificador <<PK, FK>>
+}
+
+entity "MESA" as MESA {
+  * mesa_id : identificador <<PK>>
+  --
+  numero : entero
+  capacidad : entero
+  estado : texto
+}
+
+entity "PEDIDO" as PEDIDO {
+  * pedido_id : identificador <<PK>>
+  --
+  fecha_hora : fecha y hora
+  numero_comensales : entero
+  estado : texto
+  usuario_id : identificador <<FK>>
+  mesa_id : identificador <<FK>>
+}
+
+entity "DETALLE_PEDIDO <<débil>>" as DETALLE_PEDIDO {
+  * pedido_id : identificador <<PK, FK>>
+  * numero_linea : entero <<clave parcial>>
+  --
+  producto_id : identificador <<FK>>
+  cantidad : entero
+  precio_unitario : decimal
+  nota : texto
+}
+
+entity "CATEGORIA_MENU" as CATEGORIA_MENU {
+  * categoria_id : identificador <<PK>>
+  --
+  nombre : texto
+  descripcion : texto
+}
+
+entity "PRODUCTO_MENU" as PRODUCTO_MENU {
+  * producto_id : identificador <<PK>>
+  --
+  nombre : texto
+  precio : decimal
+  disponible : booleano
+  categoria_id : identificador <<FK>>
+}
+
+entity "FACTURA" as FACTURA {
+  * factura_id : identificador <<PK>>
+  --
+  numero : texto
+  fecha : fecha y hora
+  subtotal : decimal
+  impuestos : decimal
+  total : decimal
+  pedido_id : identificador <<FK>>
+}
+
+entity "PAGO" as PAGO {
+  * pago_id : identificador <<PK>>
+  --
+  fecha : fecha y hora
+  metodo : texto
+  monto : decimal
+  propina : decimal
+  factura_id : identificador <<FK>>
+}
+
+entity "INSUMO" as INSUMO {
+  * insumo_id : identificador <<PK>>
+  --
+  nombre : texto
+  categoria : texto
+  existencia : decimal
+  unidad : texto
+  minimo : decimal
+  costo_unitario : decimal
+  proveedor : texto <<opcional>>
+}
+
+entity "MOVIMIENTO_INVENTARIO" as MOVIMIENTO {
+  * movimiento_id : identificador <<PK>>
+  --
+  fecha : fecha y hora
+  tipo : texto
+  cantidad : decimal
+  insumo_id : identificador <<FK>>
+  pedido_id : identificador <<FK, opcional>>
+}
+
+entity "ALERTA_INVENTARIO" as ALERTA {
+  * alerta_id : identificador <<PK>>
+  --
+  fecha : fecha y hora
+  existencia_actual : decimal
+  existencia_minima : decimal
+  estado : texto
+  insumo_id : identificador <<FK>>
+}
+
+ROL ||--o{ USUARIO_ROL
+USUARIO ||--o{ USUARIO_ROL
+ROL ||--o{ ROL_PERMISO
+PERMISO ||--o{ ROL_PERMISO
+USUARIO ||--o{ PEDIDO : registra
+MESA ||--o{ PEDIDO : recibe
+PEDIDO ||--|{ DETALLE_PEDIDO : contiene
+PRODUCTO_MENU ||--o{ DETALLE_PEDIDO : aparece en
+CATEGORIA_MENU ||--o{ PRODUCTO_MENU : clasifica
+PEDIDO ||--o| FACTURA : genera
+FACTURA ||--o{ PAGO : recibe
+INSUMO ||--o{ MOVIMIENTO : registra
+PEDIDO |o--o{ MOVIMIENTO : puede generar
+INSUMO ||--o{ ALERTA : genera
+
+note bottom
+  Notación pata de gallo: || = uno obligatorio; |{ = uno o muchos;
+  |o = cero o uno; o{ = cero o muchos.
+  DETALLE_PEDIDO resuelve la relación N:M entre PEDIDO y PRODUCTO_MENU;
+  incluye cantidad, precio_unitario y nota. Es débil y usa numero_linea como clave parcial.
+  USUARIO_ROL permite asociar varios roles; confirmar esa cardinalidad.
+  El SRS no precisa pagos parciales ni la relación producto-insumo; validar ambas reglas.
+end note
+@enduml
