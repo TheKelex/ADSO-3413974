@@ -62,9 +62,3 @@ Firma (usuario de GitHub y fecha): TheKelex - 26/11/2026
 - [x] Hice commits propios en al menos 2 días distintos entre la publicación de la guía (sábado 21 de noviembre de 2026) y la entrega.
 - [x] No subí el marco documental del instructor, plantillas sin diligenciar ni archivos de otras personas.
 - [x] Subir este README actualizado y comprobar en GitHub que la carpeta está publicada.
-
-### Pendientes de revisión
-
-- Confirmar con el instructor las discrepancias de referencias RF detectadas en el SRS.
-- Confirmar responsable, fechas y disponibilidad de la contraparte.
-- Revisar manualmente el código PlantUML antes de la entrega final.
