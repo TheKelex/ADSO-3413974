@@ -1,0 +1,43 @@
+@startuml
+title SIGRES - Vista de despliegue
+left to right direction
+skinparam shadowing false
+
+node "Dispositivos cliente" as Client {
+  artifact "Navegador web\nWeb y menú QR" as Browser
+  artifact "App React Native\nAndroid 8+" as Mobile
+}
+
+node "Servidor de aplicación\nVPS o plataforma accesible" as App {
+  artifact "Plataforma web\nHTML / CSS / JS" as WebFiles
+  artifact "API PHP / Laravel" as Laravel
+  artifact "Servicio WebSocket\nEventos de cocina" as WebSocket
+}
+
+node "Servidor de datos\nRed privada" as Data {
+  database "MySQL 8+\nBase SIGRES" as MySQL
+  artifact "Agente de respaldo\ndiario" as BackupAgent
+}
+
+node "Almacenamiento separado" as Backup {
+  artifact "Respaldos diarios\nBase de datos" as BackupFile
+}
+
+Browser --> WebFiles : HTTPS 443
+Mobile --> Laravel : HTTPS 443 / JSON
+Browser --> Laravel : HTTPS 443 / JSON
+Mobile --> WebSocket : WSS 443
+Browser --> WebSocket : WSS 443
+Laravel --> MySQL : MySQL/TCP 3306\nred privada
+BackupAgent --> MySQL : MySQL/TCP 3306\nred privada local
+BackupAgent --> BackupFile : HTTPS/TLS 443\nrespaldo diario cifrado
+
+note bottom of MySQL
+  RNF-19: transacciones ACID.
+  RNF-20: respaldo diario separado;\nlo transfiere el agente por TLS 443.
+end note
+note bottom of App
+  RNF-30: alojamiento de bajo costo.
+  El proveedor queda por seleccionar.
+end note
+@enduml
