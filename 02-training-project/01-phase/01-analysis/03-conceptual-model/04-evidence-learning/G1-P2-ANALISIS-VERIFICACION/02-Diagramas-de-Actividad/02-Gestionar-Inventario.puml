@@ -1,0 +1,41 @@
+@startuml
+title SIGRES - Gestionar inventario
+
+|Administrador|
+start
+:Elige registrar o actualizar un insumo;
+if (¿Es un registro nuevo?) then ([Sí])
+  :Ingresa los datos del insumo;
+  |SIGRES|
+  if (¿El insumo ya existe?) then ([Sí])
+    :Informa que el insumo está duplicado;
+    stop
+  else ([No])
+    :Continúa con la validación;
+  endif
+else ([No])
+  :Selecciona el insumo;
+  :Ingresa los cambios;
+  |SIGRES|
+endif
+
+if (¿Datos válidos?) then ([Sí])
+  :Guarda el registro o los cambios;
+  if (¿Se guardó correctamente?) then ([Sí])
+    :Actualiza la existencia;
+    if (¿Existencia bajo el mínimo?) then ([Sí])
+      :Genera una alerta;
+    else ([No])
+      :Continúa sin generar alerta;
+    endif
+    :Confirma el resultado;
+    stop
+  else ([No])
+    :Informa que no pudo guardar los cambios;
+    stop
+  endif
+else ([No])
+  :Informa que los datos no son válidos;
+  stop
+endif
+@enduml

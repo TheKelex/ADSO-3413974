@@ -1,0 +1,37 @@
+@startuml
+title SIGRES - Registrar pedido
+
+|Mesero|
+start
+:Selecciona mesa y número de comensales;
+:Agrega productos y cantidades;
+if (¿Hay notas especiales?) then ([Sí])
+  :Agrega las notas;
+else ([No])
+  :Continúa sin notas;
+endif
+:Confirma el pedido;
+
+|SIGRES|
+if (¿Datos completos?) then ([Sí])
+  if (¿Productos disponibles?) then ([Sí])
+    if (¿Conexión disponible?) then ([Sí])
+      :Registra el pedido;
+      :Genera identificador único;
+      :Envía la comanda a cocina;
+      :Marca la mesa como ocupada;
+      :Confirma el registro;
+      stop
+    else ([No])
+      :Informa que no pudo registrar el pedido;
+      stop
+    endif
+  else ([No])
+    :Informa que un producto no está disponible;
+    stop
+  endif
+else ([No])
+  :Solicita completar los datos;
+  stop
+endif
+@enduml
