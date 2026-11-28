@@ -1,0 +1,26 @@
+﻿B5: ejecucion y validacion local con MySQL Community 8.0.46
+Contenedor temporal local; datos sintéticos, no reales.
+DDL: exit code 0 (sin errores)
+mysql_version=8.0.46
+base_tables=16
+check_constraints=32
+views=1
+dictionary_columns=96
+
+Prueba CHECK: INSERT mesa con capacidad=0
+resultado=rechazo esperado, exit_code=1
+ERROR 3819 (HY000) at line 1: Check constraint 'chk_mesa_capacidad' is violated.
+
+Prueba trigger: cambiar total de factura Pagada
+resultado=rechazo esperado, exit_code=1
+ERROR 1644 (45000) at line 1: La factura pagada es inmutable; solo se permite anularla con motivo y responsable
+Transicion Pagada -> Anulada con motivo, usuario y fecha: correcta
+
+Prueba trigger: cambiar factura ya Anulada
+resultado=rechazo esperado, exit_code=1
+ERROR 1644 (45000) at line 1: Una factura anulada no puede modificarse
+
+Vista de ventas después del pago:
+fecha_venta	id_mesero	id_producto	cantidad_vendida	total_vendido
+2026-11-27	1	1	1	100.00
+dictionary_names_and_types_match=96
