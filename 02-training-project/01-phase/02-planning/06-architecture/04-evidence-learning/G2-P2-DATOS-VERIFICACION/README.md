@@ -60,12 +60,12 @@
 
 ## 5. Historial de commits
 
-Al preparar esta carpeta, el avance de P1 del 27/11/2026 está registrado. El segundo día todavía está pendiente; la guía exige un commit sustantivo en un día distinto antes de la entrega del 28/11/2026 a las 6:00 a. m.
+La entrega P2 fue publicada el 28/11/2026. El último commit informado para esta carpeta es `0769a476e1e03b63d2109f98021594b034770c3d`. Junto con el avance de P1 del 27/11/2026, queda registrado trabajo en dos días distintos.
 
 | Día | Qué avancé (mensaje del commit) |
 |---|---|
 | 27/11/2026 | G2-P1: diseño SIGRES publicado; commit registrado en el README de P1. |
-| Pendiente | Aún no hay commit de P2 registrado; completar con la fecha y el mensaje reales después de publicarlo. |
+| 28/11/2026 | Publicación de los artefactos G2-P2 (commit `0769a476e1e03b63d2109f98021594b034770c3d`). |
 
 ## 6. Uso de inteligencia artificial (declaración obligatoria)
 
@@ -76,11 +76,11 @@ Al preparar esta carpeta, el avance de P1 del 27/11/2026 está registrado. El se
 ## 7. Enlaces
 
 - Informe de análisis / SRS: `03-execute/28-week/02-optional-activity/SRS - SIGRES.docx`.
-- Carpeta de esta entrega en GitHub: pendiente de publicar. Ruta destino prevista: `02-training-project/01-phase/02-planning/06-architecture/04-evidence-learning/G2-P2-DATOS-VERIFICACION/`.
+- Carpeta de esta entrega en GitHub: https://github.com/TheKelex/ADSO-3413974/tree/0769a476e1e03b63d2109f98021594b034770c3d/02-training-project/01-phase/02-planning/06-architecture/04-evidence-learning/G2-P2-DATOS-VERIFICACION/.
 - Otros enlaces de apoyo: ninguno.
 
 ## 8. Declaración de autoría
 
 Declaro que los artefactos de esta carpeta son de mi autoría, que lo que reutilicé de mi trabajo del año o de otras fuentes está indicado en la sección 3, que no entregué como propio material del instructor ni de otros aprendices, y que puedo explicar cada artefacto en la verificación oral.
 
-Usuario de GitHub: TheKelex  Fecha: pendiente de completar al revisar y publicar.
+Usuario de GitHub: TheKelex  Fecha: 28/11/2026.
